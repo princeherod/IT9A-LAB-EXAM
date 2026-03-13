@@ -8,3 +8,7 @@ Route::get('/', function () {
 });
 
 Route::resource('characters', CharacterController::class);
+
+// Confirm delete page
+Route::get('characters/{character}/delete', [CharacterController::class, 'confirmDelete'])
+    ->name('characters.confirmDelete');

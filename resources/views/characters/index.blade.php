@@ -38,12 +38,8 @@
                                 </small>
                             </div>
                             <div class="btn-group">
-                                <a href="{{ route('characters.edit', $char) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <form action="{{ route('characters.destroy', $char) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this character?')">Delete</button>
-                                </form>
+                                <a href="{{ route('characters.edit', $char->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{{ route('characters.confirmDelete', $char->id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
                             </div>
                         </div>
                     </li>
@@ -70,23 +66,27 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                        <input type="text" name="name" id="name"
+                            class="form-control @error('name') is-invalid @enderror"
+                            value="{{ old('name') }}" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="mb-3">
                         <label for="power" class="form-label">Power</label>
-                        <input type="text" name="power" id="power" class="form-control @error('power') is-invalid @enderror" value="{{ old('power') }}">
+                        <input type="text" name="power" id="power"
+                            class="form-control @error('power') is-invalid @enderror"
+                            value="{{ old('power') }}">
                         @error('power')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="mb-3">
                         <label for="universe" class="form-label">Universe</label>
-                        <input type="text" name="universe" id="universe" class="form-control @error('universe') is-invalid @enderror" value="{{ old('universe') }}">
+                        <input type="text" name="universe" id="universe"
+                            class="form-control @error('universe') is-invalid @enderror"
+                            value="{{ old('universe') }}">
                         @error('universe')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -102,5 +102,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+@if ($errors->any())
+<script>
+    var createModal = new bootstrap.Modal(document.getElementById('createModal'));
+    createModal.show();
+</script>
+@endif
+
 </body>
 </html>
