@@ -13,6 +13,11 @@ class CharacterController extends Controller
         return view('characters.index', compact('characters'));
     }
 
+    public function create()
+    {
+        return view('characters.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

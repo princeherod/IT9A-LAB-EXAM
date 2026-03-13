@@ -5,11 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Dictionary</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    <style>
+        * { box-sizing: border-box; }
 
-<div class="container my-5">
-    <h1 class="mb-4 text-center">Character Dictionary</h1>
+        body {
+            background: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1a1a1a;
+        }
+
+        /* Top navbar */
+        .top-nav {
+            background: #f9f9f8;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Main content */
+        .main {
+            max-width: 900px;
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        /* Create button */
+        .btn-create {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #d1d1d1;
+            background: #fff;
+            color: #1a1a1a;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background 0.15s;
+        }
+        .btn-create:hover { background: #f5f5f5; color: #1a1a1a; }
+
+        /* Character list */
+        .char-list {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .char-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #efefef;
+            background: #fff;
+        }
+        .char-item:last-child { border-bottom: none; }
+
+        .char-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+
+        .char-meta {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Actions dropdown */
+        .dropdown-toggle {
+            border: 1px solid #d1d1d1;
+            background: #fff;
+            color: #1a1a1a;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .dropdown-toggle:hover { background: #f5f5f5; }
+        .dropdown-toggle::after { margin-left: 6px; }
+
+        .dropdown-item { font-size: 13px; }
+        .dropdown-item.text-danger { color: #dc3545 !important; }
+
+        /* Alert */
+        .alert { font-size: 14px; margin-bottom: 20px; }
+
+        /* Empty state */
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">Character Dictionary</div>
+
+<div class="main">
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show">
@@ -18,97 +129,44 @@
         </div>
     @endif
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Characters</h5>
-            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createModal">
-                Create character
-            </button>
-        </div>
+    <h1>Characters</h1>
 
-        <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
-                @forelse($characters as $char)
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ $char->name }}</strong><br>
-                                <small class="text-muted">
-                                    {{ $char->power ?? 'No power' }} • {{ $char->universe ?? 'Unknown universe' }}
-                                </small>
-                            </div>
-                            <div class="btn-group">
-                                <a href="{{ route('characters.edit', $char->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <a href="{{ route('characters.confirmDelete', $char->id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
-                            </div>
-                        </div>
-                    </li>
-                @empty
-                    <li class="list-group-item text-center text-muted py-4">
-                        No characters yet. Create one!
-                    </li>
-                @endforelse
-            </ul>
-        </div>
-    </div>
-</div>
+    <a href="{{ route('characters.create') }}" class="btn-create">
+        ⊕ Create character
+    </a>
 
-<!-- CREATE MODAL -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createModalLabel">Create Character</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="char-list">
+        @forelse($characters as $char)
+            <div class="char-item">
+                <div>
+                    <div class="char-name">{{ $char->name }}</div>
+                    <div class="char-meta">
+                        {{ $char->power ?? 'No power' }}<br>
+                        {{ $char->universe ?? 'Unknown universe' }}
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="dropdown-toggle" data-bs-toggle="dropdown">
+                        Actions
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('characters.edit', $char->id) }}">Edit</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('characters.confirmDelete', $char->id) }}">Delete</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <form action="{{ route('characters.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" id="name"
-                            class="form-control @error('name') is-invalid @enderror"
-                            value="{{ old('name') }}" required>
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="power" class="form-label">Power</label>
-                        <input type="text" name="power" id="power"
-                            class="form-control @error('power') is-invalid @enderror"
-                            value="{{ old('power') }}">
-                        @error('power')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="universe" class="form-label">Universe</label>
-                        <input type="text" name="universe" id="universe"
-                            class="form-control @error('universe') is-invalid @enderror"
-                            value="{{ old('universe') }}">
-                        @error('universe')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Character</button>
-                </div>
-            </form>
-        </div>
+        @empty
+            <div class="empty-state">No characters yet. Create one!</div>
+        @endforelse
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-@if ($errors->any())
-<script>
-    var createModal = new bootstrap.Modal(document.getElementById('createModal'));
-    createModal.show();
-</script>
-@endif
-
 </body>
 </html>
